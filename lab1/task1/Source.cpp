@@ -22,7 +22,7 @@ public:
         : x(x_val), y(y_val), z(z_val) {
     }
 
-    // Обчислення b[x, y, z]
+    // Обчислення b [x, y, z]
     double calculateB() const {
         double term1 = 1.0;
         double term2 = (x + y) / std::pow(std::abs(z), 0.34);
