@@ -1,6 +1,6 @@
 #include <cmath>
 
-// ООП-клас для обчислення функцій
+// Клас для обчислення функцій
 public ref class FunctionTabulator {
 private:
     double y;
