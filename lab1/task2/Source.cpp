@@ -52,7 +52,7 @@ private: System::Void btnTabulate_Click(System::Object^ sender, System::EventArg
         double b = tabulator->calculateB(x);
         double a = tabulator->calculateA(x, b);
 
-        // Formatted Output in a MultiLine TextBox
+         // Formatted Output in a MultiLine TextBox
         System::String^ line = System::String::Format("{0,6:F1}\t\t{1,10:F6}\t\t{2,10:F6}\r\n", x, b, a);
         txtResult->AppendText(line);
     }
