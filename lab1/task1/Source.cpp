@@ -8,7 +8,7 @@ private:
     double y;
     double z;
 
-    // Допоміжний метод для обчислення факторіала
+    // An auxiliary method for calculating the factorial
     static double factorial(int n) {
         double result = 1.0;
         for (int i = 1; i <= n; ++i) {
@@ -22,7 +22,7 @@ public:
         : x(x_val), y(y_val), z(z_val) {
     }
 
-    // Обчислення b [x, y, z]
+    // Calculation b [x, y, z]
     double calculateB() const {
         double term1 = 1.0;
         double term2 = (x + y) / std::pow(std::abs(z), 0.34);
@@ -33,7 +33,7 @@ public:
         return term1 - term2 + term3 + term4 + term5;
     }
 
-    // Обчислення a[x, y, z, b]
+    // Calculation of a[x, y, z, b]
     double calculateA(double b) const {
         double term1 = y - std::sqrt(std::abs(std::pow(x, 2) - b));
         double term2 = (y - std::pow(x, 2)) / (z + 4.0 * std::pow(y, 2));

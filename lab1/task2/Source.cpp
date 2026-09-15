@@ -1,6 +1,6 @@
 #include <cmath>
 
-// Клас для обчислення функцій
+// A class for evaluating functions
 public ref class FunctionTabulator {
 private:
     double y;
@@ -32,7 +32,7 @@ public:
     }
 };
 
-// Обробник натискання кнопки на формі
+// Button-click handler on a form
 private: System::Void btnTabulate_Click(System::Object^ sender, System::EventArgs^ e) {
     double x_start = -1.0;
     double x_end = 1.0;
@@ -42,17 +42,17 @@ private: System::Void btnTabulate_Click(System::Object^ sender, System::EventArg
 
     FunctionTabulator^ tabulator = gcnew FunctionTabulator(y, z);
 
-    // Очищення та налаштування текстового поля
+    // Clearing and Configuring a Text Field
     txtResult->Clear();
     txtResult->AppendText("   x\t\t   b[x,y,z]\t\t   a[x,y,z,b]\r\n");
     txtResult->AppendText("------------------------------------------------------\r\n");
 
-    // Цикл табулювання
+    // Tabulation Cycle
     for (double x = x_start; x <= x_end + 1e-9; x += dx) {
         double b = tabulator->calculateB(x);
         double a = tabulator->calculateA(x, b);
 
-        // Форматований вивід у MultiLine TextBox
+        // Formatted Output in a MultiLine TextBox
         System::String^ line = System::String::Format("{0,6:F1}\t\t{1,10:F6}\t\t{2,10:F6}\r\n", x, b, a);
         txtResult->AppendText(line);
     }
