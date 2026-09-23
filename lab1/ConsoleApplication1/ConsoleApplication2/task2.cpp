@@ -50,14 +50,14 @@ public:
         multilineBuffer << "=======================================\n";
 
         // Tabulation loop from x_start to x_end with step dx
-        for (double x = x_start; x <= x_end + dx / 2.0; x += dx) {
+        for (double x = x_start; x <= x_end; x += dx) {
             // Avoid -0.00 due to double floating-point error
-            double current_x = (std::abs(x) < 1e-9) ? 0.0 : x;
+            //double current_x = (std::abs(x) < 1e-9) ? 0.0 : x;
 
-            double b_val = CalculateB(current_x);
-            double a_val = CalculateA(current_x, b_val);
+            double b_val = CalculateB(x);
+            double a_val = CalculateA(x, b_val);
 
-            multilineBuffer << "| " << std::setw(6) << std::fixed << std::setprecision(2) << current_x
+            multilineBuffer << "| " << std::setw(6) << std::fixed << std::setprecision(2) << x
                 << " | " << std::setw(12) << std::setprecision(5) << b_val
                 << " | " << std::setw(11) << std::setprecision(5) << a_val
                 << " |\n";
@@ -85,3 +85,4 @@ int main() {
 
     return 0;
 }
+
