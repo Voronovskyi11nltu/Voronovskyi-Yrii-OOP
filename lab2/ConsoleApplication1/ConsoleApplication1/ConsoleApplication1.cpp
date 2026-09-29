@@ -3,7 +3,7 @@
 
 using namespace std;
 
-// ================= BOOK CLASS =================
+// ================ BOOK CLASS ================
 class Book {
 private:
     string author;
@@ -52,7 +52,7 @@ public:
     }
 };
 
-// ================= LIBRARY CLASS =================
+// ================ LIBRARY CLASS ================
 class Library {
 private:
     Book* books;    // Dynamic array of Book objects
