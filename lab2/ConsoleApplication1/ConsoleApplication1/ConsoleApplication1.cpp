@@ -3,76 +3,111 @@
 
 using namespace std;
 
-// =============== BOOK CLASS ===============
+// ================= BOOK CLASS =================
 class Book {
 private:
-    string author;
-    string title;
-    string publisher;
+    string* author;
+    string* title;
+    string* publisher;
     int year;
     int pages;
 
 public:
-    // Default constructor
-    Book() : author(""), title(""), publisher(""), year(0), pages(0) {}
-
-    // Parameterized constructor
-    Book(string a, string t, string p, int y, int pg) {
-        set(a, t, p, y, pg);
+    // Default Constructor
+    Book() {
+        author = new string("");
+        title = new string("");
+        publisher = new string("");
+        year = 0;
+        pages = 0;
     }
 
-    // Destructor
-    ~Book() {
-        // No dynamic memory in this class, so the destructor is empty
-    }
-
-    // set() method to assign values
-    void set(string a, string t, string p, int y, int pg) {
-        author = a;
-        title = t;
-        publisher = p;
+    // Parameterized Constructor
+    Book(const string& a, const string& t, const string& p, int y, int pg) {
+        author = new string(a);
+        title = new string(t);
+        publisher = new string(p);
         year = y;
         pages = pg;
     }
 
-    // Getter methods to access private fields (required for searching)
-    string getAuthor() const { return author; }
-    string getTitle() const { return title; }
-    string getPublisher() const { return publisher; }
+    // Copy Constructor (Deep Copy)
+    Book(const Book& other) {
+        author = new string(*other.author);
+        title = new string(*other.title);
+        publisher = new string(*other.publisher);
+        year = other.year;
+        pages = other.pages;
+    }
+
+    // Copy Assignment Operator (Deep Copy)
+    Book& operator=(const Book& other) {
+        if (this != &other) {
+            *author = *other.author;
+            *title = *other.title;
+            *publisher = *other.publisher;
+            year = other.year;
+            pages = other.pages;
+        }
+        return *this;
+    }
+
+    // Destructor - Explicitly releases dynamic memory
+    ~Book() {
+        delete author;
+        delete title;
+        delete publisher;
+        cout << "[Book Destructor]: Memory for book successfully released." << endl;
+    }
+
+    // Setter method
+    void set(const string& a, const string& t, const string& p, int y, int pg) {
+        *author = a;
+        *title = t;
+        *publisher = p;
+        year = y;
+        pages = pg;
+    }
+
+    // Getter methods
+    string getAuthor() const { return *author; }
+    string getTitle() const { return *title; }
+    string getPublisher() const { return *publisher; }
     int getYear() const { return year; }
     int getPages() const { return pages; }
 
-    // show() method to print book details
+    // Display method
     void show() const {
-        cout << "Author: " << author
-            << " | Title: \"" << title
-            << "\" | Publisher: " << publisher
+        cout << "Author: " << *author
+            << " | Title: \"" << *title
+            << "\" | Publisher: " << *publisher
             << " | Year: " << year
             << " | Pages: " << pages << endl;
     }
 };
 
-// =============== LIBRARY CLASS ===============
+// ================= LIBRARY CLASS =================
 class Library {
 private:
-    Book* books;    // Dynamic array of Book objects
+    Book* books;     // Dynamic array of Book objects
     int count;       // Current number of books
-    int capacity;    // Maximum capacity of the library
+    int capacity;    // Maximum capacity
 
 public:
     // Constructor
     Library(int cap = 100) {
         capacity = cap;
         count = 0;
-        books = new Book[capacity]; // Dynamic memory allocation
+        books = new Book[capacity]; // Dynamic memory allocation for array
     }
 
     // Destructor
     ~Library() {
-        delete[] books; // Freeing memory to prevent memory leaks
+        delete[] books; // Releases dynamic array memory
+        cout << "[Library Destructor]: Memory for library array successfully released." << endl;
     }
 
-    // Method to add a book (library equivalent of a setter)
+    // Method to add a book (uses set / assignment)
     void addBook(const Book& book) {
         if (count < capacity) {
             books[count] = book;
@@ -83,21 +118,20 @@ public:
         }
     }
 
-    // show() method to print all books
+    // Display all books
     void show() const {
         if (count == 0) {
             cout << "Library is empty." << endl;
             return;
         }
-        cout << "\n--- LIST OF BOOKS IN THE LIBRARY ---" << endl;
+        cout << "\n--- LIBRARY BOOK LIST ---" << endl;
         for (int i = 0; i < count; i++) {
             books[i].show();
         }
-        cout << "------------------------------------\n" << endl;
+        cout << "-------------------------\n" << endl;
     }
 
-    // --- SEARCH METHODS ---
-
+    // Search methods
     void searchByAuthor(const string& targetAuthor) const {
         bool found = false;
         cout << "Search by author '" << targetAuthor << "':" << endl;
@@ -136,7 +170,7 @@ public:
 
     void searchByYear(int targetYear) const {
         bool found = false;
-        cout << "Search by publication year '" << targetYear << "':" << endl;
+        cout << "Search by year '" << targetYear << "':" << endl;
         for (int i = 0; i < count; i++) {
             if (books[i].getYear() == targetYear) {
                 books[i].show();
@@ -149,38 +183,39 @@ public:
 
 // ================= MAIN FUNCTION =================
 int main() {
-    // Creating a Library object (capacity of 10 books)
+    // Create library object (capacity = 10)
     Library myLib(10);
 
-    // Using the parameterized constructor
+    // Using parameterized constructor
     Book b1("Shevchenko", "Kobzar", "Osnova", 1840, 114);
     Book b2("Franko", "Zakhar Berkut", "Dnipro", 1883, 250);
-    Book b3("Kostenko", "Marusia Churai", "Radianskyi Pysmennyk", 1979, 160);
+    Book b3("Kostenko", "Marusia Churai", "Soviet Writer", 1979, 160);
 
-    // Creating a book using the default constructor and set() method
+    // Using default constructor and set() method
     Book b4;
     b4.set("Shevchenko", "Haidamaky", "Osnova", 1841, 150);
 
-    // Adding books to the library array
+    // Adding books to library
     myLib.addBook(b1);
     myLib.addBook(b2);
     myLib.addBook(b3);
     myLib.addBook(b4);
 
-    // Displaying all contents
+    // Display all books
     myLib.show();
 
-    // Testing individual assignment methods
+    // Testing search methods
     myLib.searchByAuthor("Shevchenko");
     cout << endl;
 
     myLib.searchByTitle("Zakhar Berkut");
     cout << endl;
 
-    myLib.searchByPublisher("Radianskyi Pysmennyk");
+    myLib.searchByPublisher("Soviet Writer");
     cout << endl;
 
     myLib.searchByYear(1841);
+    cout << endl;
 
     return 0;
 }
