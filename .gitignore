@@ -8,3 +8,4 @@ Release/
 *.exe
 *.user
 *.sln
+/lab2/ConsoleApplication1/ConsoleApplication1/task.cpp
