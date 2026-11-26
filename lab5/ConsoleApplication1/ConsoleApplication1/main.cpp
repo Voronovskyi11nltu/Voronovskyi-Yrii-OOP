@@ -1,47 +1,51 @@
 #include <iostream>
-#include <vector>
 #include "Mammals.h"
 
 using namespace std;
 
-// Helper function to demonstrate late binding via references
-void printMammalInfo(const Mammal& m) {
-    m.describe();
-    cout << "----------------------------------------" << endl;
-}
-
 int main() {
     setlocale(LC_ALL, "Ukrainian");
 
-    // INPUT DATASET #1: Working via pointers to the base class Mammal*
-    cout << "=== КОМПЛЕКТ ВХІДНИХ ДАНИХ №1 (вказівники Mammal*) ===" << endl << endl;
-    vector<Mammal*> set1;
-    set1.push_back(new Human("Тарас", 30, "Архітектор", "Українець"));
-    set1.push_back(new Horse("Буран", 6, "Кінний завод", "Орловський рисак", 52.0));
-    set1.push_back(new Cow("Ласуня", 4, "Ферма", 22.5, "Ряба"));
+    cout << "=== ДЕМОНСТРАЦІЯ ПОЛІМОРФІЗМУ ТА ПІЗНЬОГО ЗВ'ЯЗУВАННЯ ===" << endl << endl;
 
-    for (const Mammal* ptr : set1) {
-        ptr->describe(); // Late binding: calls the method of the actual object
-        cout << "----------------------------------------" << endl;
-    }
+    // 1. Working with an object of the Human class
+    Human* p1 = new Human("Тарас", 30, "Архітектор", "Українець");
+    p1->describe(); // Calls Human::describe()
+    cout << "----------------------------------------" << endl;
 
-    // INPUT DATASET #2: Working via references to the base class Mammal&
-    cout << "\n=== КОМПЛЕКТ ВХІДНИХ ДАНИХ №2 (посилання Mammal&) ===" << endl << endl;
-    Human h2("Олена", 24, "Лікар", "Українка");
-    Horse hr2("Вітер", 4, "Іподром", "Арабський скакун", 64.5);
-    Cow c2("Квітка", 5, "Приватне господарство", 19.0, "Руда");
+    Mammal* p2 = p1; // Base class pointer is initialized with the derived class address (p1 == p2)
+    p2->describe();  // Thanks to virtual, Human::describe() is called (late binding)
+    cout << "----------------------------------------" << endl << endl;
 
-    printMammalInfo(h2);
-    printMammalInfo(hr2);
-    printMammalInfo(c2);
+    // 2. Working with an object of the Horse class
+    Horse* p3 = new Horse("Буран", 6, "Кінний завод", "Орловський рисак", 52.0);
+    p3->describe(); // Calls Horse::describe()
+    cout << "----------------------------------------" << endl;
 
-    // Freeing dynamic memory (demonstration of virtual destructors)
-    cout << "\n=== ЗВІЛЬНЕННЯ ДИНАМІЧНОЇ ПАМ'ЯТІ (Комплект №1) ===" << endl;
-    for (Mammal* ptr : set1) {
-        delete ptr;
-        cout << endl;
-    }
+    Mammal* p4 = p3; // p3 == p4
+    p4->describe();  // Calls Horse::describe()
+    cout << "----------------------------------------" << endl << endl;
 
-    cout << "=== ЗАВЕРШЕННЯ ПРОГРАМИ (Знищення об'єктів Комплекту №2) ===" << endl;
+    // 3. Working with an object of the Cow class
+    Cow* p5 = new Cow("Ласуня", 4, "Ферма", 22.5, "Ряба");
+    p5->describe(); // Calls Cow::describe()
+    cout << "----------------------------------------" << endl;
+
+    Animal* p6 = p5; // Can also be assigned to the intermediate base class Animal (p5 == p6)
+    p6->describe();  // Calls Cow::describe()
+    cout << "----------------------------------------" << endl;
+
+    Mammal* p7 = p5; // And to the root abstract class Mammal (p5 == p7)
+    p7->describe();  // Calls Cow::describe()
+    cout << "----------------------------------------" << endl << endl;
+
+    // Freeing dynamic memory (call delete only once for each created object!)
+    cout << "=== ЗВІЛЬНЕННЯ ПАМ'ЯТІ ===" << endl;
+    delete p2; // Destroys the Human object (calls ~Human(), then ~Mammal())
+    cout << endl;
+    delete p4; // Destroys the Horse object (calls ~Horse(), ~Animal(), ~Mammal())
+    cout << endl;
+    delete p7; // Destroys the Cow object (calls ~Cow(), ~Animal(), ~Mammal())
+
     return 0;
 }
