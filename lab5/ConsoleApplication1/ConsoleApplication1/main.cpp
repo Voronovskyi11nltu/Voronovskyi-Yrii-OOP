@@ -1,51 +1,48 @@
 #include <iostream>
+#include <vector>
 #include "Mammals.h"
 
 using namespace std;
 
+// Helper function to demonstrate late binding via a pointer (using ->)
+void printMammalInfo(const Mammal* m) {
+    if (m != nullptr) {
+        m->describe();
+        cout << "----------------------------------------" << endl;
+    }
+}
+
 int main() {
     setlocale(LC_ALL, "Ukrainian");
 
-    cout << "=== ÄÅÌÎÍÑÒÐÀÖ²ß ÏÎË²ÌÎÐÔ²ÇÌÓ ÒÀ Ï²ÇÍÜÎÃÎ ÇÂ'ßÇÓÂÀÍÍß ===" << endl << endl;
+    // INPUT DATASET #1: Dynamic objects in a vector of Mammal* pointers
+    cout << "=== ÊÎÌÏËÅÊÒ ÂÕ²ÄÍÈÕ ÄÀÍÈÕ ¹1 (âêàç³âíèêè Mammal*) ===" << endl << endl;
+    vector<Mammal*> set1;
+    set1.push_back(new Human("Òàðàñ", 30, "Àðõ³òåêòîð", "Óêðà¿íåöü"));
+    set1.push_back(new Horse("Áóðàí", 6, "Ê³ííèé çàâîä", "Îðëîâñüêèé ðèñàê", 52.0));
+    set1.push_back(new Cow("Ëàñóíÿ", 4, "Ôåðìà", 22.5, "Ðÿáà"));
 
-    // 1. Working with an object of the Human class
-    Human* p1 = new Human("Òàðàñ", 30, "Àðõ³òåêòîð", "Óêðà¿íåöü");
-    p1->describe(); // Calls Human::describe()
-    cout << "----------------------------------------" << endl;
+    for (const Mammal* ptr : set1) {
+        printMammalInfo(ptr); // Pass the pointer directly
+    }
 
-    Mammal* p2 = p1; // Base class pointer is initialized with the derived class address (p1 == p2)
-    p2->describe();  // Thanks to virtual, Human::describe() is called (late binding)
-    cout << "----------------------------------------" << endl << endl;
+    // INPUT DATASET #2: Passing object addresses (&) to the function via a pointer
+    cout << "\n=== ÊÎÌÏËÅÊÒ ÂÕ²ÄÍÈÕ ÄÀÍÈÕ ¹2 (âêàç³âíèê íà ³ñíóþ÷³ îá'ºêòè) ===" << endl << endl;
+    Human h2("Îëåíà", 24, "Ë³êàð", "Óêðà¿íêà");
+    Horse hr2("Â³òåð", 4, "²ïîäðîì", "Àðàáñüêèé ñêàêóí", 64.5);
+    Cow c2("Êâ³òêà", 5, "Ïðèâàòíå ãîñïîäàðñòâî", 19.0, "Ðóäà");
 
-    // 2. Working with an object of the Horse class
-    Horse* p3 = new Horse("Áóðàí", 6, "Ê³ííèé çàâîä", "Îðëîâñüêèé ðèñàê", 52.0);
-    p3->describe(); // Calls Horse::describe()
-    cout << "----------------------------------------" << endl;
+    printMammalInfo(&h2);
+    printMammalInfo(&hr2);
+    printMammalInfo(&c2);
 
-    Mammal* p4 = p3; // p3 == p4
-    p4->describe();  // Calls Horse::describe()
-    cout << "----------------------------------------" << endl << endl;
+    // Freeing dynamic memory (Dataset #1)
+    cout << "\n=== ÇÂ²ËÜÍÅÍÍß ÄÈÍÀÌ²×ÍÎ¯ ÏÀÌ'ßÒ² (Êîìïëåêò ¹1) ===" << endl;
+    for (Mammal* ptr : set1) {
+        delete ptr;
+        cout << endl;
+    }
 
-    // 3. Working with an object of the Cow class
-    Cow* p5 = new Cow("Ëàñóíÿ", 4, "Ôåðìà", 22.5, "Ðÿáà");
-    p5->describe(); // Calls Cow::describe()
-    cout << "----------------------------------------" << endl;
-
-    Animal* p6 = p5; // Can also be assigned to the intermediate base class Animal (p5 == p6)
-    p6->describe();  // Calls Cow::describe()
-    cout << "----------------------------------------" << endl;
-
-    Mammal* p7 = p5; // And to the root abstract class Mammal (p5 == p7)
-    p7->describe();  // Calls Cow::describe()
-    cout << "----------------------------------------" << endl << endl;
-
-    // Freeing dynamic memory (call delete only once for each created object!)
-    cout << "=== ÇÂ²ËÜÍÅÍÍß ÏÀÌ'ßÒ² ===" << endl;
-    delete p2; // Destroys the Human object (calls ~Human(), then ~Mammal())
-    cout << endl;
-    delete p4; // Destroys the Horse object (calls ~Horse(), ~Animal(), ~Mammal())
-    cout << endl;
-    delete p7; // Destroys the Cow object (calls ~Cow(), ~Animal(), ~Mammal())
-
+    cout << "=== ÇÀÂÅÐØÅÍÍß ÏÐÎÃÐÀÌÈ (Çíèùåííÿ îá'ºêò³â Êîìïëåêòó ¹2) ===" << endl;
     return 0;
 }
